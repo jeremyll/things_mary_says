@@ -9,7 +9,7 @@ from time import sleep
 
 URL = 'https://noisebridge.net/wiki/Things_Mary_Says'
 PATH_TAG = '//p/text()'
-RUN_EVERY_IN_MINUTES = 100
+RUN_EVERY_IN_MINUTES = 150
 
 def pick_and_say():
     # Go to wiki to grab all the things mary says
