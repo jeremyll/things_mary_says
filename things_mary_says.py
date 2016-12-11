@@ -11,7 +11,10 @@ URL = 'https://noisebridge.net/wiki/Things_Mary_Says'
 PATH_TAG = '//p/text()'
 RUN_EVERY_IN_MINUTES = 150
 
-def pick_and_say():
+previous_phrases = []
+
+def pick_and_say(look_back=10):
+    global previous_phrases
     # Go to wiki to grab all the things mary says
     text = requests.get(URL).text
     root = html.fromstring(text)
@@ -20,9 +23,21 @@ def pick_and_say():
     phrases = root.xpath(PATH_TAG)
 
     # Make random selection
-    choice = random.choice(phrases)
+    choice = random.choice(phrases).strip()
+
+    # Make sure the choice hasn't been said recently
+    while choice in previous_phrases:
+        print 'choice: "%s", but skipping' \
+            % choice
+        choice = random.choice(phrases)
+
+    # Add choice to beginning of previous_phrases
+    previous_phrases = [choice] + previous_phrases
+    # Pop the oldest off the list
+    previous_phrases = previous_phrases[:look_back]
 
     command = ['say', choice]
+    print 'saying "%s"' % choice
     call(command)
 
 def main():
